@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Voting System</title>
+
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    #candidates {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #voting-form {
+      max-width: 400px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #results {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #result-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #result-list li {
+      margin-bottom: 8px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Online Voting System</h1>
+  <div id="candidates"></div>
+  <div id="voting-form">
+    <h2>Connect to Metamask Before Voting</h2>
+    <label for="candidate">Select Candidate:</label>
+    <select id="candidate" name="candidate"></select>
+    <button onclick="vote()">Vote</button>
+  </div>
+  <div id="results">
+    <h2>Results</h2>
+    <ul id="result-list"></ul>
+  </div>
+
+  <script>
+    const candidates = [
+      { id: 1, name: 'Candidate 1' },
+      { id: 2, name: 'Candidate 2' },
+      // Add more candidates as needed
+    ];
+
+    const votes = {};
+
+    async function getCandidates() {
+      const candidateSelect = document.getElementById('candidate');
+
+      candidates.forEach((candidate) => {
+        const option = document.createElement('option');
+        option.value = candidate.id;
+        option.text = `${candidate.name} (ID: ${candidate.id})`;
+        candidateSelect.appendChild(option);
+      });
+    }
+
+    async function getResults() {
+      const resultList = document.getElementById('result-list');
+
+      resultList.innerHTML = '';
+
+      for (const candidateId in votes) {
+        const candidate = candidates.find(c => c.id == candidateId);
+        const listItem = document.createElement('li');
+        listItem.textContent = `${candidate.name}: ${votes[candidateId]} votes`;
+        resultList.appendChild(listItem);
+      }
+    }
+
+    function vote() {
+      const candidateId = document.getElementById('candidate').value;
+      const walletAddress = prompt('Enter your wallet address:');
+
+      if (!walletAddress) {
+        return alert('Wallet address is required.');
+      }
+
+      // Check if the candidateId is valid
+      if (!candidates.some(candidate => candidate.id == candidateId)) {
+        return alert('Invalid candidate selected.');
+      }
+
+      // Update the vote count
+      votes[candidateId] = (votes[candidateId] || 0) + 1;
+
+      alert('Vote successful!');
+      getResults();
+    }
+
+    getCandidates();
+    getResults();
+  </script>
+</body>
+</html>
